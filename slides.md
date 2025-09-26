@@ -78,7 +78,7 @@ layout: cover
 <Card v-after title="Supports guardrails"><carbon:checkmark class="text-green-400" /></Card>
 <Card v-after title="Great API to build Tools"><carbon:checkmark class="text-green-400" /></Card>
 <Card v-after title="Built by the folks at OpenAI"><carbon:checkmark class="text-green-400" /></Card>
-<Card v-after title="Built in Python"><carbon:close class="text-red-600" /></Card>
+<Card v-after title="Written in Python"><carbon:close class="text-red-600" /></Card>
 </v-clicks>
 </section>
 
@@ -121,7 +121,7 @@ layout: cover
 
 ---
 
-# Agents SDK
+# ai-agents
 
 <v-clicks>
 
