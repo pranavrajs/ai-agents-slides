@@ -127,11 +127,12 @@ layout: cover
 
 - Built using RubyLLM
 - Multi-Agent Orchestration
-- Seamless Handoffs
-- Managed Tool Calling
+  - Peer to Peer with seamless handoffs
+  - Agent as a tool pattern
+- Supports Tool Calling
 - Supports Structured Output
-- Shared Context
-- Thread-Safe Architecture
+- Allows for a shared context
+- Thread-Safe (_Almost_)
 - Provider Agnostic
 
 </v-clicks>
