@@ -240,5 +240,3 @@ class: text-center
 </div>
 
 </div>
-
----
