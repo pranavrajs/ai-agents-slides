@@ -128,8 +128,8 @@ layout: cover
 - Built using RubyLLM
 - Multi-Agent Orchestration
 - Seamless Handoffs
-- Tool Integration
-- Callbacks
+- Managed Tool Calling
+- Supports Structured Output
 - Shared Context
 - Thread-Safe Architecture
 - Provider Agnostic
@@ -165,6 +165,30 @@ support.register_handoffs(triage)   # Hub-and-spoke pattern
 runner = Agents::Runner.with_agents(triage, sales, support)
 
 result = runner.run("Do you have special plans for businesses?")
+```
+
+---
+
+```rb{all|2-3|5,18|1|2|3|5|6-7|10-14|17|all}
+class CrmLookupTool < Agents::Tool
+  description "Look up customer account information by account ID"
+  param :account_id, type: "string", desc: "Customer account ID (e.g., CUST001)"
+
+  def perform(tool_context, account_id:)
+    customer = Customer.find(account_id)
+    return "Customer not found" unless customer
+
+    # Store customer information in shared state for other tools/agents
+    tool_context.state[:customer_id] = account_id.upcase
+    tool_context.state[:customer_name] = customer["name"]
+    tool_context.state[:customer_email] = customer["email"]
+    tool_context.state[:current_plan] = customer["plan"]["name"]
+    tool_context.state[:next_bill_date] = customer["billing"]["next_bill_date"]
+
+    # Return the entire customer data as JSON for the agent to process
+    customer.to_json
+  end
+end
 ```
 
 ---
