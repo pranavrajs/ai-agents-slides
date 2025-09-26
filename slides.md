@@ -4,9 +4,136 @@ title: AI Agents Walkthrough
 class: relative
 transition: slide-left
 mdc: true
+theme: ./theme
 ---
 
-# ai-agents sdk
+# Building Agents with Ruby
+
+<img class="h-20 w-auto inline drop-shadow absolute bottom-30 right-64" src="/woot.png"/>
+<img class="h-24 w-auto inline rotate-30 drop-shadow absolute bottom-36 right-34" src="/ruby.png"/>
+
+Shivam Mishra<br>
+Lead Engineer @ Chatwoot
+
+---
+
+<img src="/screenshot.png" class="inset-0 fixed">
+
+<!--
+Let's talk about Chatwoot.
+Chatwoot is an open source omnichannel support desk for small teams as well as enterprise, we allow you to connect multiple channels like instagram, whatsapp, email etc.
+We've been doing all this with a small team of 8 people, managing this and a mobile app too.
+-->
+
+---
+
+# Boring Tech-stack
+
+- <span v-mark="{ at: 2, color: '#CC0000', type: 'box', animationDuration: 500 }">**Ruby on Rails**</span> monolith with **Sidekiq** on the backend
+- **Vue** for frontend
+- **Postgres** is the DB
+- **Redis** is the cache
+- All deployed on **AWS**
+
+
+---
+layout: cover
+---
+
+# Building Captain
+
+<v-clicks>
+
+- Native AI Agent in Chatwoot
+- Trains on your website and past conversations
+- Built using OpenAI Ruby SDK
+
+</v-clicks>
+
+---
+layout: cover
+---
+
+# Limitations
+
+<v-clicks>
+
+- Doesn't scale beyond FAQs
+- It's really difficult to handle multiple use-cases
+- System prompt and user instructions may not always align
+
+</v-clicks>
+
+---
+layout: cover
+---
+
+<img v-click.hide src="/openai-agents-sdk.png" class="absolute w-full top-8 shadow-lg outline outline-1 outline-gray-200 rounded-md overflow-hidden">
+<img v-after src="/openai-agents-sdk.png" class="absolute w-full top-8 shadow-lg outline outline-1 outline-gray-200 rounded-md overflow-hidden opacity-50 blur-sm">
+
+<section class="grid gap-5">
+<v-clicks>
+<Card v-after title="Framework to build a multi-agent system"><carbon:checkmark class="text-green-400" /></Card>
+<Card v-after title="Supports handoffs"><carbon:checkmark class="text-green-400" /></Card>
+<Card v-after title="Supports guardrails"><carbon:checkmark class="text-green-400" /></Card>
+<Card v-after title="Great API to build Tools"><carbon:checkmark class="text-green-400" /></Card>
+<Card v-after title="Built by the folks at OpenAI"><carbon:checkmark class="text-green-400" /></Card>
+<Card v-after title="Built in Python"><carbon:close class="text-red-600" /></Card>
+</v-clicks>
+</section>
+
+---
+layout: cover
+---
+
+# State of AI in Ruby
+
+<v-clicks>
+
+- OpenAI/Claude/OpenRouter Ruby SDK
+- RubyLLM
+- ActiveAgents
+- LangChain.rb
+
+</v-clicks>
+
+---
+
+# Two Choices
+
+<section class="grid grid-cols-2 gap-4">
+  <v-clicks>
+  <Card title="Use the OpenAI Agents SDK"/>
+  <Card title="Build our own"/>
+  <Card description="The framework is established is maintained by a team larger than ours"/>
+  <Card description="We might fall short of features, will have to build a lot of expertise internally"/>
+  <Card description="Since it's in Python, we will have to build infrastructure to pipe data from our Rails App"/>
+  <Card description="Can we natively integrated in our Rails App"/>
+  <Card description="Will be another service that we, and our OSS community will have to manage"/>
+  <Card description="Easy to maintain and run in the long run"/>
+  </v-clicks>
+</section>
+
+---
+
+<img class="shadow-lg outline outline-1 outline-gray-200 rounded-md overflow-hidden h-full mx-auto -mt-2" src="/ai-agents.png"/>
+<div class="text-xs mx-auto text-center mt-4">ai-agents.chatwoot.dev</div>
+
+---
+
+# Agents SDK
+
+<v-clicks>
+
+- Multi-Agent Orchestration
+- Seamless Handoffs
+- Tool Integration
+- Callbacks
+- Shared Context
+- Thread-Safe Architecture
+- Provider Agnostic
+
+</v-clicks>
 
 ---
 
@@ -41,17 +168,6 @@ result = runner.run("Do you have special plans for businesses?")
 
 ---
 
-## Project Structure
-
-  -   `lib/agents.rb`: The main entry point, handling configuration and loading other components.
-  -   `lib/agents/agent.rb`: Defines the `Agent` class, which represents an individual AI agent with role, instructions, and tools.
-  -   `lib/agents/tool.rb`: Defines the `Tool` class, the base for creating custom tools that agents can execute.
-  -   `lib/agents/agent_runner.rb`: Thread-safe wrapper that manages the agent registry and provides the public API for running conversations.
-  -   `lib/agents/runner.rb`: Internal execution engine that handles individual conversation turns. The `Runner.with_agents` factory method returns an `AgentRunner` instance.
-  -   `lib/agents/context.rb`: Manages conversation state that persists across agent interactions and handoffs.
-
----
-
 ## Key Concepts
 
 -   **Agent**: An AI assistant with a specific role, instructions, and tools. Each agent can register handoffs to other agents.
@@ -60,143 +176,17 @@ result = runner.run("Do you have special plans for businesses?")
 -   **AgentRunner**: The thread-safe public API for managing multi-agent conversations. Created via `Runner.with_agents(...)`.
 -   **Runner**: Internal execution engine that handles individual conversation turns. Each call to `AgentRunner.run` creates a new Runner instance.
 -   **Context**: A shared state object that stores conversation history and agent information, fully serializable for persistence across process boundaries.
--   **Callbacks**: Event hooks for monitoring agent execution in real-time, including agent thinking, tool start/complete, and handoffs. Non-blocking and thread-safe.
 
 ---
 
-```mermaid
-graph TD
-    R[Runner]
-    C[Shared Context]
+## Project Structure
 
-    R --> C
-
-    A1[Agent: Triage]
-    A2[Agent: Billing]
-
-    R --> A1
-    R --> A2
-
-    T1[Tool: customer_lookup]
-    H1[Handoff Tool]
-
-    T2[Tool: check_balance]
-    H2[Handoff Tool]
-
-    A1 --> T1
-    A1 --> H1
-
-    A2 --> T2
-    A2 --> H2
-
-    C -.-> A1
-    C -.-> A2
-
-    style R fill:#e1f5fe
-    style C fill:#f3e5f5
-    style A1 fill:#fff3e0
-    style A2 fill:#fff3e0
-```
-
----
-
-## Almost Full Architecture
-
-```mermaid
-graph LR
-    U[User] -->|"Runner.with_agents(...)"| AR[AgentRunner<br/>Thread-safe API]
-
-    AR -->|"Creates per turn"| R[Runner<br/>Execution Engine]
-
-    R --> C[Shared Context<br/>Serializable State]
-
-    R --> A1[Agent: Triage<br/>Role + Instructions]
-    R --> A2[Agent: Billing<br/>Role + Instructions]
-
-    A1 -->|"Has"| T1[Tool: customer_lookup]
-    A1 -->|"Can handoff to"| A2
-
-    A2 -->|"Has"| T2[Tool: check_balance]
-    A2 -->|"Can handoff to"| A1
-
-    AR -->|"Fires"| CB[Callbacks<br/>Real-time Events]
-
-    C -.->|"Persists across"| A1
-    C -.->|"Persists across"| A2
-
-    CB -->|"on_agent_thinking"| U
-    CB -->|"on_tool_start/complete"| U
-    CB -->|"on_agent_handoff"| U
-
-    style AR fill:#e1f5fe
-    style R fill:#fff9c4
-    style C fill:#f3e5f5
-    style A1 fill:#fff3e0
-    style A2 fill:#fff3e0
-    style CB fill:#e8f5e9
-```
-
----
-
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant AR as Runner
-    participant A as Agent
-    participant LLM as LLM Provider
-
-    U->>AR: "What time is it?"
-    AR->>A: Select Agent + Context
-    A->>LLM: Process with Instructions
-    LLM-->>A: Generate Response
-    A-->>AR: Final Response
-    AR-->>U: "It's currently 3:30 PM"
-```
-
----
-
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant AR as Runner
-    participant A as Agent
-    participant LLM as LLM Provider
-    participant T as Tools
-
-    U->>AR: "What's my account balance?"
-    AR->>A: Select Agent + Context
-    A->>LLM: Process with Instructions
-    LLM->>T: lookup_customer_balance
-    T-->>LLM: "$1,250.00"
-    LLM-->>A: Generate Response
-    A-->>AR: Final Response
-    AR-->>U: "Your current balance is $1,250.00"
-```
-
----
-
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant AR as Runner
-    participant A1 as Triage Agent
-    participant A2 as Billing Agent
-    participant LLM as LLM Provider
-    participant T as Tools
-
-    U->>AR: "I have a billing question about my last invoice"
-    AR->>A1: Select Triage Agent
-    A1->>LLM: Process with Instructions
-    LLM-->>A1: "Transfer to Billing"
-    A1->>AR: Request Handoff to Billing
-    AR->>A2: Load Billing Agent + Context
-    A2->>LLM: Process with Billing Instructions
-    LLM->>T: lookup_invoice_details
-    T-->>LLM: Invoice data
-    LLM-->>A2: Generate Response
-    A2-->>AR: Final Response
-    AR-->>U: "I found your invoice. Here are the details..."
-```
+  -   `lib/agents.rb`: The main entry point, handling configuration and loading other components.
+  -   `lib/agents/agent.rb`: Defines the `Agent` class, which represents an individual AI agent with role, instructions, and tools.
+  -   `lib/agents/tool.rb`: Defines the `Tool` class, the base for creating custom tools that agents can execute.
+  -   `lib/agents/agent_runner.rb`: Thread-safe wrapper that manages the agent registry and provides the public API for running conversations.
+  -   `lib/agents/runner.rb`: Internal execution engine that handles individual conversation turns. The `Runner.with_agents` factory method returns an `AgentRunner` instance.
+  -   `lib/agents/context.rb`: Manages conversation state that persists across agent interactions and handoffs.
 
 ---
 
