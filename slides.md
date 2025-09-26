@@ -125,6 +125,7 @@ layout: cover
 
 <v-clicks>
 
+- Built using RubyLLM
 - Multi-Agent Orchestration
 - Seamless Handoffs
 - Tool Integration
@@ -168,7 +169,7 @@ result = runner.run("Do you have special plans for businesses?")
 
 ---
 
-## Key Concepts
+# Key Concepts
 
 -   **Agent**: An AI assistant with a specific role, instructions, and tools. Each agent can register handoffs to other agents.
 -   **Tool**: A custom function that an agent can use to perform actions (e.g., look up customer data, send an email). Tools are thread-safe and receive context as parameters.
@@ -179,7 +180,7 @@ result = runner.run("Do you have special plans for businesses?")
 
 ---
 
-## Project Structure
+# Project Structure
 
   -   `lib/agents.rb`: The main entry point, handling configuration and loading other components.
   -   `lib/agents/agent.rb`: Defines the `Agent` class, which represents an individual AI agent with role, instructions, and tools.
@@ -190,12 +191,54 @@ result = runner.run("Do you have special plans for businesses?")
 
 ---
 
-## Best Practices
+<img class="shadow-lg outline outline-1 outline-gray-200 rounded-md overflow-hidden h-full mx-auto -mt-2" src="/agents-github.png"/>
+<div class="text-xs mx-auto text-center mt-4">https://github.com/chatwoot/ai-agents</div>
+
+---
+class: text-center
+layout: cover
+---
+
+# Demo Time
+
+---
+
+# Best Practices
 
 - Make sure the scope of sub agents don't overlap
 - Use different models for different use cases
 - The best tool call is the one that is not executed
 - Agents Error Compound
 - Cost increases quadratically
+
+---
+class: text-center
+---
+
+# That's all folks
+
+<div class="grid grid-cols-4 gap-4 pt-12 mb-20">
+
+<div class="flex justify-center items-center h-full flex-col">
+  <img class="w-44" src="/chatwoot-com.svg">
+  chatwoot.com
+</div>
+
+<div class="flex justify-center items-center h-full flex-col">
+  <img class="w-44" src="/github-chatwoot.svg">
+  github.com/chatwoot
+</div>
+
+<div class="flex justify-center items-center h-full flex-col">
+  <img class="w-44" src="/shivam-dev.svg">
+  shivam.dev
+</div>
+
+<div class="flex justify-center items-center h-full flex-col">
+  <img class="w-44" src="/agents-rb.svg">
+  ai-agents github
+</div>
+
+</div>
 
 ---
