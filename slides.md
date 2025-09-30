@@ -5,36 +5,33 @@ class: relative
 transition: slide-left
 mdc: true
 theme: ./theme
+fonts:
+  sans: 'Haskoy'
 ---
 
-# Building Agents with Ruby
+# Building AI Agents with Ruby
 
 <img class="h-20 w-auto inline drop-shadow absolute bottom-30 right-64" src="/woot.png"/>
 <img class="h-24 w-auto inline rotate-30 drop-shadow absolute bottom-36 right-34" src="/ruby.png"/>
 
-Shivam Mishra<br>
-Lead Engineer @ Chatwoot
+Pranav Raj S<br>
+Co-founder, Chatwoot
 
 ---
 
-<img src="/screenshot.png" class="inset-0 fixed">
-
-<!--
-Let's talk about Chatwoot.
-Chatwoot is an open source omnichannel support desk for small teams as well as enterprise, we allow you to connect multiple channels like instagram, whatsapp, email etc.
-We've been doing all this with a small team of 8 people, managing this and a mobile app too.
--->
+<img src="/dashboard.png" class="inset-0 fixed">
 
 ---
 
-# Boring Tech-stack
+# Tech Stack
 
-- <span v-mark="{ at: 2, color: '#CC0000', type: 'box', animationDuration: 500 }">**Ruby on Rails**</span> monolith with **Sidekiq** on the backend
+- <span>**Ruby on Rails**</span> monolith with **Sidekiq** on the backend
 - **Vue** for frontend
 - **Postgres** is the DB
 - **Redis** is the cache
 - All deployed on **AWS**
 
+<img src="/architecture.png" class="h-3/4 w-auto absolute right-0 bottom-4">
 
 ---
 layout: cover
@@ -42,13 +39,17 @@ layout: cover
 
 # Building Captain
 
-<v-clicks>
-
 - Native AI Agent in Chatwoot
 - Trains on your website and past conversations
 - Built using OpenAI Ruby SDK
 
-</v-clicks>
+
+---
+layout: cover
+---
+
+<img src="/implementation.png"/>
+
 
 ---
 layout: cover
@@ -59,28 +60,11 @@ layout: cover
 <v-clicks>
 
 - Doesn't scale beyond FAQs
-- It's really difficult to handle multiple use-cases
+- It's really difficult to handle multiple scenarios
 - System prompt and user instructions may not always align
+- It was harder to build agents dynamically
 
 </v-clicks>
-
----
-layout: cover
----
-
-<img v-click.hide src="/openai-agents-sdk.png" class="absolute w-full top-8 shadow-lg outline outline-1 outline-gray-200 rounded-md overflow-hidden">
-<img v-after src="/openai-agents-sdk.png" class="absolute w-full top-8 shadow-lg outline outline-1 outline-gray-200 rounded-md overflow-hidden opacity-50 blur-sm">
-
-<section class="grid gap-5">
-<v-clicks>
-<Card v-after title="Framework to build a multi-agent system"><carbon:checkmark class="text-green-400" /></Card>
-<Card v-after title="Supports handoffs"><carbon:checkmark class="text-green-400" /></Card>
-<Card v-after title="Supports guardrails"><carbon:checkmark class="text-green-400" /></Card>
-<Card v-after title="Great API to build Tools"><carbon:checkmark class="text-green-400" /></Card>
-<Card v-after title="Built by the folks at OpenAI"><carbon:checkmark class="text-green-400" /></Card>
-<Card v-after title="Written in Python"><carbon:close class="text-red-600" /></Card>
-</v-clicks>
-</section>
 
 ---
 layout: cover
@@ -98,17 +82,45 @@ layout: cover
 </v-clicks>
 
 ---
+layout: cover
+---
 
-# Two Choices
+<img src="/expectation.png"/>
+
+---
+layout: cover
+---
+
+<img src="/openai-agents-sdk.png" class="absolute w-full top-8 shadow-lg outline outline-1 outline-gray-200 rounded-md overflow-hidden">
+
+---
+layout: cover
+---
+
+
+<section class="grid gap-5">
+  <Card title="Framework to build a multi-agent system"><carbon:checkmark class="text-green-400" /></Card>
+  <v-clicks>
+    <Card v-after title="Supports handoffs"><carbon:checkmark class="text-green-400" /></Card>
+    <Card v-after title="Supports guardrails"><carbon:checkmark class="text-green-400" /></Card>
+    <Card v-after title="Great API to build Tools"><carbon:checkmark class="text-green-400" /></Card>
+    <Card v-after title="Built by the folks at OpenAI"><carbon:checkmark class="text-green-400" /></Card>
+    <Card v-after title="Written in Python"><carbon:close class="text-red-600" /></Card>
+  </v-clicks>
+</section>
+
+---
+layout: cover
+---
 
 <section class="grid grid-cols-2 gap-4">
   <v-clicks>
   <Card title="Use the OpenAI Agents SDK"/>
   <Card title="Build our own"/>
-  <Card description="The framework is established is maintained by a team larger than ours"/>
+  <Card description="The framework is established. It is maintained by a team larger than ours"/>
   <Card description="We might fall short of features, will have to build a lot of expertise internally"/>
   <Card description="Since it's in Python, we will have to build infrastructure to pipe data from our Rails App"/>
-  <Card description="Can we natively integrated in our Rails App"/>
+  <Card description="We can natively integrate in our Rails App"/>
   <Card description="Will be another service that we, and our OSS community will have to manage"/>
   <Card description="Easy to maintain and run in the long run"/>
   </v-clicks>
@@ -132,9 +144,7 @@ layout: cover
 - Supports Tool Calling
 - Supports Structured Output
 - Allows for a shared context
-- Thread-Safe (_Almost_)
 - Provider Agnostic
-
 </v-clicks>
 
 ---
@@ -148,20 +158,20 @@ triage = Agents::Agent.new(
 
 sales = Agents::Agent.new(
   name: "Sales Agent",
-  instructions: "Answer details about plans",
+  instructions: "Answer details about pricing, plans, how to upgrade etc.",
   tools: [CreateLeadTool.new, CRMLookupTool.new]
 )
 
 support = Agents::Agent.new(
   name: "Support Agent",
-  instructions: "Handle account realted and technical issues",
+  instructions: "Handle account related and technical issues",
   tools: [FaqLookupTool.new, TicketTool.new]
 )
 
 # Wire up handoff relationships - clean and simple!
 triage.register_handoffs(sales, support)
 sales.register_handoffs(triage)     # Can route back to triage
-support.register_handoffs(triage)   # Hub-and-spoke pattern
+support.register_handoffs(triage)
 
 runner = Agents::Runner.with_agents(triage, sales, support)
 
@@ -199,8 +209,7 @@ end
 -   **Agent**: An AI assistant with a specific role, instructions, and tools. Each agent can register handoffs to other agents.
 -   **Tool**: A custom function that an agent can use to perform actions (e.g., look up customer data, send an email). Tools are thread-safe and receive context as parameters.
 -   **Handoff**: The process of transferring a conversation from one agent to another. This happens seamlessly without the user knowing.
--   **AgentRunner**: The thread-safe public API for managing multi-agent conversations. Created via `Runner.with_agents(...)`.
--   **Runner**: Internal execution engine that handles individual conversation turns. Each call to `AgentRunner.run` creates a new Runner instance.
+-   **AgentRunner**: The public API for managing multi-agent conversations. Created via `Runner.with_agents(...)`.
 -   **Context**: A shared state object that stores conversation history and agent information, fully serializable for persistence across process boundaries.
 
 ---
@@ -220,48 +229,19 @@ end
 <div class="text-xs mx-auto text-center mt-4">https://github.com/chatwoot/ai-agents</div>
 
 ---
-class: text-center
 layout: cover
 ---
 
-# Demo Time
+# Some observations
 
----
-
-# Best Practices
-
-- Make sure the scope of sub agents don't overlap
-- Use different models for different use cases
-- The best tool call is the one that is not executed
-- Agents Error Compound
-- Cost increases quadratically
+- Make sure the scope of sub agents don't overlap. Write clear descriptions for tools and agents.
+- Try out different models for different use cases.
 
 ---
 class: text-center
 ---
 
-# That's all folks
-
-<div class="grid grid-cols-4 gap-4 pt-12 mb-20">
-
 <div class="flex justify-center items-center h-full flex-col">
-  <img class="w-44" src="/chatwoot-com.svg">
-  chatwoot.com
-</div>
 
-<div class="flex justify-center items-center h-full flex-col">
-  <img class="w-44" src="/github-chatwoot.svg">
-  github.com/chatwoot
-</div>
-
-<div class="flex justify-center items-center h-full flex-col">
-  <img class="w-44" src="/shivam-dev.svg">
-  shivam.dev
-</div>
-
-<div class="flex justify-center items-center h-full flex-col">
-  <img class="w-44" src="/agents-rb.svg">
-  ai-agents github
-</div>
-
+  github.com/chatwoot/ai-agents
 </div>
